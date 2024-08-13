@@ -11,11 +11,13 @@ public class Spawner : MonoBehaviour
     [SerializeField] private ExtraPlatform _extraPlatform;
     [SerializeField] private int _poolCapacity = 5;
     [SerializeField] private int _poolMaxSize = 5;
+    private ColorChanger _colorChanger;
     private int _amountOfContact = 0;
     private float timeUntilDeletion = 0;
 
     private void Awake()
     {
+        _colorChanger = gameObject.AddComponent<ColorChanger>();
         _pool = new ObjectPool<GameObject>(
         createFunc: () => Instantiate(_cubePrefab),
         actionOnGet: (obj) => ActionOnGet(obj),
@@ -28,7 +30,7 @@ public class Spawner : MonoBehaviour
 
     private void Start()
     {
-        InvokeRepeating(nameof(GetCube), 0.0f, 3f);
+        InvokeRepeating(nameof(GetCube), 0.0f, 7f);
     }
 
     private void OnEnable()
@@ -39,11 +41,6 @@ public class Spawner : MonoBehaviour
     private void OnDisable()
     {
         _extraPlatform.WasContact -= IncreaseNumberOfTouch;
-    }
-
-    public void ChangeColor(GameObject obj)
-    {
-        obj.gameObject.GetComponent<Renderer>().material.color = Random.ColorHSV();
     }
 
     public void StartTime(GameObject obj, ref int count)
@@ -71,7 +68,7 @@ public class Spawner : MonoBehaviour
         if (_amountOfContact == 0)
         {
             _amountOfContact++;
-            ChangeColor(other.gameObject);
+            _colorChanger.ChangeColor(other.gameObject);
             StartTime(other.gameObject, ref _amountOfContact);
         }
     }

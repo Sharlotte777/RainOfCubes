@@ -8,9 +8,15 @@ using UnityEngine;
 
 public class ExtraPlatform : MonoBehaviour
 {
+    [SerializeField] private Spawner _spawner;
     public event Action WasContact;
     private int _amountOfContact = 0;
-    [SerializeField] private Spawner _spawner;
+    private ColorChanger _colorChanger;
+
+    private void Awake()
+    {
+        _colorChanger = gameObject.AddComponent<ColorChanger>();
+    }
 
     private void OnCollisionEnter(Collision other)
     {
@@ -18,7 +24,7 @@ public class ExtraPlatform : MonoBehaviour
         {
             _amountOfContact++;
             WasContact?.Invoke();
-            _spawner.ChangeColor(other.gameObject);
+            _colorChanger.ChangeColor(other.gameObject);
             _spawner.StartTime(other.gameObject, ref _amountOfContact);
         }
     }
